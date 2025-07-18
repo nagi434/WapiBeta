@@ -11,16 +11,46 @@ let ioInstance = null;
 
 const initClient = () => {
   const sessionPath = path.join(__dirname, '../storage/sessions');
-  if (fs.existsSync(sessionPath)) {
-    fs.removeSync(sessionPath);
-  }
+  fs.ensureDirSync(sessionPath, { recursive: true });
+
+  // Limpiar sesiones previas para evitar conflictos
+  fs.emptyDirSync(sessionPath);
   client = new Client({
     authStrategy: new LocalAuth({
       dataPath: path.join(__dirname, '../storage/sessions')
     }),
+    store: {
+      // Forzar guardado de sesión
+      set: async (key, value) => {
+        const filePath = path.join(sessionPath, `${key}.json`);
+        await fs.writeJson(filePath, value);
+      },
+      get: async (key) => {
+        const filePath = path.join(sessionPath, `${key}.json`);
+        try {
+          const data = await fs.readJson(filePath);
+          console.log('Sesión cargada:', key);
+          return data;
+        } catch (e) {
+          console.log('No se encontró sesión:', key);
+          return null;
+        }
+      },
+      remove: async (key) => {
+        const filePath = path.join(sessionPath, `${key}.json`);
+        await fs.remove(filePath);
+        console.log('Sesión eliminada:', key);
+      }
+    },
     puppeteer: {
       headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage',
+        '--disable-accelerated-2d-canvas',
+        '--no-first-run',
+        '--no-zygote',
+        '--single-process',
+        '--disable-gpu'],
+      executablePath: process.env.CHROMIUM_PATH || null
     }
   });
 

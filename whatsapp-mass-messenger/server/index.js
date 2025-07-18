@@ -6,6 +6,8 @@ const path = require('path');
 const whatsapp = require('./whatsapp');
 const scheduler = require('./scheduler');
 const multer = require('multer');
+const MAX_RECONNECT_ATTEMPTS = 5;
+let reconnectAttempts = 0;
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadDir = path.join(__dirname, '../storage/uploads');
@@ -44,7 +46,16 @@ const io = new Server(httpServer , {cors: {
 
 // Configuración
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, '../public'), {
+  maxAge: '1d',
+  etag: true,
+  lastModified: true,
+  setHeaders: (res, path) => {
+    if (path.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-cache');
+    }
+  }
+}));
 
 // Rutas
 app.get('/', (req, res) => {
@@ -183,9 +194,24 @@ app.post('/cancel-scheduled', (req, res) => {
 
 app.get('/refresh-qr', (req, res) => {
   if (client) {
-    client.initialize(); // Reiniciar la conexión para generar nuevo QR
+    // Limpiar sesiones anteriores
+    const sessionPath = path.join(__dirname, '../storage/sessions');
+    fs.emptyDirSync(sessionPath);
+    
+    // Reiniciar el cliente
+    client.destroy()
+      .then(() => {
+        client.initialize().catch(console.error);
+        reconnectAttempts = 0;
+        res.json({ success: true });
+      })
+      .catch(error => {
+        console.error('Error al reiniciar el cliente:', error);
+        res.status(500).json({ success: false, error: error.message });
+      });
+  } else {
+    res.status(400).json({ success: false, error: 'Cliente no inicializado' });
   }
-  res.json({ success: true });
 });
 
 app.get('/health', (req, res) => {

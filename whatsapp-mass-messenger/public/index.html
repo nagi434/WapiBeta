@@ -82,7 +82,17 @@
       </table>
     </div>
   </div>
-
+  <script>
+    document.getElementById('refresh-qr').addEventListener('click', async () => {
+      try {
+        const response = await fetch('/refresh-qr');
+        if (!response.ok) throw new Error('Error al actualizar QR');
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error al actualizar el código QR. Intenta recargar la página.');
+      }
+    });
+    </script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
   <script src="scripts.js"></script>
