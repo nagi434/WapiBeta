@@ -54,13 +54,6 @@ app.get('/', (req, res) => {
 const sessionsPath = path.join(__dirname, '../storage/sessions');
 fs.ensureDirSync(sessionsPath);
 
-// Inicializar WhatsApp y programador
-httpServer.listen(process.env.PORT || 3000, () => {
-  console.log(`Server running on port ${process.env.PORT || 3000}`);
-  whatsapp.init(io);
-  scheduler.init(whatsapp.getClient());
-});
-
 process.on('uncaughtException', (err) => {
   console.error('Uncaught Exception:', err);
 });
@@ -202,6 +195,8 @@ app.get('/health', (req, res) => {
   });
 });
 
+whatsapp.init(io);
+scheduler.init(whatsapp.getClient());
 const PORT = process.env.PORT || 3000;
 httpServer.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
