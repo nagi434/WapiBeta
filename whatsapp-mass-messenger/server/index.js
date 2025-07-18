@@ -171,6 +171,13 @@ app.post('/cancel-scheduled', (req, res) => {
   res.json(scheduler.cancelScheduledMessage(jobId));
 });
 
+app.get('/refresh-qr', (req, res) => {
+  if (client) {
+    client.initialize(); // Reiniciar la conexión para generar nuevo QR
+  }
+  res.json({ success: true });
+});
+
 const PORT = process.env.PORT || 3000;
 httpServer.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);

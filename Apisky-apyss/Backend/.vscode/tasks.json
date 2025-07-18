@@ -1,0 +1,12 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "start-backend",
+      "type": "shell",
+      "command": "node index.js",
+      "group": "build",
+      "problemMatcher": []
+    }
+  ]
+}

@@ -1,12 +1,13 @@
 const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
+const qrcodeGenerator = require('qrcode'); // Nueva importación para generar QR como imagen
 const fs = require('fs-extra');
 const path = require('path');
 
 let client;
 let qrCode = null;
 let isAuthenticated = false;
-let ioInstance;
+let ioInstance = null;
 
 const initClient = () => {
   client = new Client({
@@ -19,10 +20,21 @@ const initClient = () => {
     }
   });
 
-  client.on('qr', (qr) => {
+  client.on('qr', async (qr) => {
     qrCode = qr;
+    
+    // Mostrar QR en terminal (funcionalidad existente)
     qrcode.generate(qr, { small: true });
-    if (ioInstance) ioInstance.emit('qr', qr);
+    
+    // Generar QR como imagen base64 para la web (nueva funcionalidad)
+    try {
+      const qrImage = await generateQRBase64(qr);
+      if (ioInstance) {
+        ioInstance.emit('qr', qrImage);
+      }
+    } catch (error) {
+      console.error('Error generando QR para la web:', error);
+    }
   });
 
   client.on('authenticated', () => {
@@ -48,6 +60,16 @@ const initClient = () => {
   });
 
   client.initialize();
+};
+
+// Función para generar QR en base64 (nueva función)
+const generateQRBase64 = (qr) => {
+  return new Promise((resolve, reject) => {
+    qrcodeGenerator.toDataURL(qr, (err, url) => {
+      if (err) reject(err);
+      resolve(url);
+    });
+  });
 };
 
 const init = (io) => {

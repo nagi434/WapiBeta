@@ -44,15 +44,27 @@ document.addEventListener('DOMContentLoaded', () => {
   scheduleDate.min = today;
 
   // Escuchar eventos del servidor
-  socket.on('qr', (qr) => {
+  socket.on('qr', (qrImage) => {
     qrContainer.classList.remove('hidden');
     authStatus.classList.add('hidden');
     messageSection.classList.add('hidden');
     scheduledMessagesSection.classList.add('hidden');
     
-    QRCode.toCanvas(qrCodeElement, qr, { width: 200 }, (error) => {
-      if (error) console.error('Error generando QR:', error);
-    });
+    // Mostrar el QR como imagen
+    qrCodeElement.innerHTML = `<img src="${qrImage}" alt="QR Code" style="max-width: 300px;">`;
+    
+    // Opcional: agregar botón para actualizar QR
+    const refreshBtn = document.createElement('button');
+    refreshBtn.textContent = 'Actualizar QR';
+    refreshBtn.className = 'btn';
+    refreshBtn.style.marginTop = '10px';
+    refreshBtn.onclick = () => {
+      fetch('/refresh-qr').then(() => {
+        qrCodeElement.innerHTML = '<p>Generando nuevo QR...</p>';
+      });
+    };
+    
+    qrCodeElement.appendChild(refreshBtn);
   });
 
   socket.on('authenticated', () => {
