@@ -14,7 +14,7 @@ const initClient = () => {
   fs.ensureDirSync(sessionPath, { recursive: true });
 
   // Limpiar sesiones previas para evitar conflictos
-  fs.emptyDirSync(sessionPath);
+  //fs.emptyDirSync(sessionPath);
   client = new Client({
     authStrategy: new LocalAuth({
       dataPath: path.join(__dirname, '../storage/sessions')

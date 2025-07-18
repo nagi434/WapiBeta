@@ -196,7 +196,7 @@ app.get('/refresh-qr', (req, res) => {
   if (client) {
     // Limpiar sesiones anteriores
     const sessionPath = path.join(__dirname, '../storage/sessions');
-    fs.emptyDirSync(sessionPath);
+    //fs.emptyDirSync(sessionPath);
     
     // Reiniciar el cliente
     client.destroy()
