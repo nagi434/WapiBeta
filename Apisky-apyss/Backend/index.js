@@ -4,7 +4,7 @@ const cors = require('cors');
 const corsOptions = {
   origin: [
     'http://localhost:5173',  // Para desarrollo local
-    'https://tunombre-frontend.onrender.com'  // Tu URL de frontend en producción
+    'https://wapibeta.onrender.com'  // Tu URL de frontend en producción
   ],
   credentials: true
 };
