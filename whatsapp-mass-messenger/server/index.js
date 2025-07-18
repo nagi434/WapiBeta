@@ -37,7 +37,10 @@ const upload = multer({
 
 const app = express();
 const httpServer = createServer(app);
-const io = new Server(httpServer);
+const io = new Server(httpServer , {cors: {
+  origin: "*",
+  methods: ["GET", "POST"]
+}});
 
 // Configuración
 app.use(express.json());
@@ -48,9 +51,23 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
+const sessionsPath = path.join(__dirname, '../storage/sessions');
+fs.ensureDirSync(sessionsPath);
+
 // Inicializar WhatsApp y programador
-whatsapp.init(io);
-scheduler.init(whatsapp.getClient());
+httpServer.listen(process.env.PORT || 3000, () => {
+  console.log(`Server running on port ${process.env.PORT || 3000}`);
+  whatsapp.init(io);
+  scheduler.init(whatsapp.getClient());
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+});
+
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled Rejection:', err);
+});
 
 // Socket.io para comunicación en tiempo real
 io.on('connection', (socket) => {
@@ -176,6 +193,13 @@ app.get('/refresh-qr', (req, res) => {
     client.initialize(); // Reiniciar la conexión para generar nuevo QR
   }
   res.json({ success: true });
+});
+
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'OK',
+    whatsapp: whatsapp.checkAuth() ? 'connected' : 'disconnected'
+  });
 });
 
 const PORT = process.env.PORT || 3000;

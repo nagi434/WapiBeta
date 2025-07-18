@@ -4,12 +4,16 @@ const qrcodeGenerator = require('qrcode'); // Nueva importación para generar QR
 const fs = require('fs-extra');
 const path = require('path');
 
-let client;
+let client = null;
 let qrCode = null;
 let isAuthenticated = false;
 let ioInstance = null;
 
 const initClient = () => {
+  const sessionPath = path.join(__dirname, '../storage/sessions');
+  if (fs.existsSync(sessionPath)) {
+    fs.removeSync(sessionPath);
+  }
   client = new Client({
     authStrategy: new LocalAuth({
       dataPath: path.join(__dirname, '../storage/sessions')
