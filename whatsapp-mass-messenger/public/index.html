@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsApp Mass Messenger</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>WhatsApp Mass Messenger</h1>
+    
+    <div id="auth-section">
+      <div id="qr-container" class="hidden">
+        <h2>Escanear QR</h2>
+        <div id="qr-code"></div>
+        <p>Escanea este código QR con WhatsApp en tu teléfono</p>
+      </div>
+      <div id="auth-status" class="hidden">
+        <p id="status-message"></p>
+        <button id="logout-btn" class="btn">Desvincular</button>
+      </div>
+    </div>
+
+    <div id="message-section" class="hidden">
+      <h2>Enviar Mensajes Masivos</h2>
+      
+      <div class="form-group">
+        <label for="message-type">Tipo de Mensaje:</label>
+        <select id="message-type">
+          <option value="text">Texto</option>
+          <option value="media">Imagen/PDF</option>
+        </select>
+      </div>
+
+      <div id="text-content" class="content-section">
+        <label for="message-text">Mensaje:</label>
+        <textarea id="message-text" rows="5"></textarea>
+      </div>
+
+      <div id="media-content" class="content-section hidden">
+        <label for="media-file">Archivo:</label>
+        <input type="file" id="media-file" accept="image/*,.pdf">
+        <label for="media-caption">Descripción:</label>
+        <textarea id="media-caption" rows="3"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="recipients">Destinatarios (separados por comas o saltos de línea):</label>
+        <textarea id="recipients" rows="5"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="schedule-message"> Programar mensaje
+        </label>
+      </div>
+
+      <div id="schedule-section" class="hidden">
+        <label for="schedule-date">Fecha:</label>
+        <input type="date" id="schedule-date">
+        
+        <label for="schedule-time">Hora:</label>
+        <input type="time" id="schedule-time" step="1">
+      </div>
+
+      <button id="send-btn" class="btn">Enviar</button>
+    </div>
+
+    <div id="scheduled-messages" class="hidden">
+      <h2>Mensajes Programados</h2>
+      <table id="scheduled-table">
+        <thead>
+          <tr>
+            <th>Fecha Programada</th>
+            <th>Destinatarios</th>
+            <th>Tipo</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+  <script src="scripts.js"></script>
+</body>
+</html>
