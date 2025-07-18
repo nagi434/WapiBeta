@@ -1,5 +1,7 @@
 // services/api.js
 // Servicio de autenticación simulado
+// Configuración de la API
+import { API_BASE_URL } from '@/config/api';
 const authService = {
   login: async ({ username, password }) => {
     return new Promise((resolve, reject) => {
@@ -15,7 +17,7 @@ const authService = {
   logout: async () => {
     try {
       // 1. Cerrar sesión en el backend de WhatsApp
-      const waLogoutRes = await fetch('http://localhost:3001/api/wa-logout', {
+      const waLogoutRes = await fetch(`${API_BASE_URL}/api/wa-logout`, {
         method: 'POST'
       });
       
@@ -30,7 +32,7 @@ const authService = {
       console.error('Error en logout:', error);
       // Si falla el cierre de sesión de WhatsApp, intentar forzar reinicio
       try {
-        const forceReset = await fetch('http://localhost:3001/api/forzar-reinicio', {
+        const forceReset = await fetch(`${API_BASE_URL}/api/forzar-reinicio`, {
           method: 'POST'
         });
         

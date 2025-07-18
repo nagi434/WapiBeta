@@ -1,6 +1,21 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const corsOptions = {
+  origin: [
+    'http://localhost:5173',  // Para desarrollo local
+    'https://tunombre-frontend.onrender.com'  // Tu URL de frontend en producción
+  ],
+  credentials: true
+};
+app.use(cors(corsOptions));
+const response = await fetch(`${import.meta.env.VITE_API_URL}/tu-endpoint`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(tusDatos)
+});
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -463,7 +478,7 @@ if (fs.existsSync('contactSegments.json')) {
 }
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0',() => {
     console.log(`Backend WhatsApp escuchando en puerto ${PORT}`);
     console.log(`Abre http://localhost:${PORT} en tu navegador`);
 });
