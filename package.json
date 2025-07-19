@@ -3,8 +3,8 @@
     "version": "1.0.0",
     "main": "server/index.js",
     "scripts": {
-        "start": "node server/index.js",
-        "dev": "nodemon server/index.js",
+        "start": "node whatsapp-mass-messenger/server/index.js",
+        "dev": "nodemon whatsapp-mass-messenger/server/index.js",
         "postinstall": "npm install puppeteer --unsafe-perm=true"
     },
     "dependencies": {
