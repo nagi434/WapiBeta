@@ -23,6 +23,11 @@ RUN apt-get update && apt-get install -y \
     libxrandr2 \
     libxss1 \
     libxtst6 \
+    libdrm2 \
+    libgbm1 \
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    libxshmfence1 \
     xdg-utils \
     --no-install-recommends
 
