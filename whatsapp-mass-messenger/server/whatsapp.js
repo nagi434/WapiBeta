@@ -72,23 +72,27 @@ const initClient = () => {
   });
 
   client.on('authenticated', () => {
+    console.log('¡Autenticado!');
     isAuthenticated = true;
     qrCode = null;
     if (ioInstance) ioInstance.emit('authenticated');
   });
 
   client.on('auth_failure', () => {
+    console.error('Fallo de autenticación:', msg);
     isAuthenticated = false;
     if (ioInstance) ioInstance.emit('auth_failure');
   });
 
   client.on('disconnected', (reason) => {
+    console.warn('Desconectado:', reason);
     isAuthenticated = false;
     if (ioInstance) ioInstance.emit('disconnected', reason);
     // No eliminamos la sesión aquí para permitir reconexión
   });
 
   client.on('ready', () => {
+    console.log('Cliente listo');
     isAuthenticated = true;
     if (ioInstance) ioInstance.emit('ready');
   });

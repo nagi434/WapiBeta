@@ -68,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   socket.on('authenticated', () => {
+    console.log('Autenticado con éxito');
     qrContainer.classList.add('hidden');
     authStatus.classList.remove('hidden');
     statusMessage.textContent = 'Autenticado correctamente';
@@ -75,6 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   socket.on('ready', () => {
+    console.log('Cliente listo');
     qrContainer.classList.add('hidden');
     authStatus.classList.remove('hidden');
     messageSection.classList.remove('hidden');
